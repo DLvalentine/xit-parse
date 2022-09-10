@@ -1,0 +1,33 @@
+{
+  "name": "xit-parse",
+  "version": "1.0.0",
+  "description": "An Xit file parser written in plain JavaScript",
+  "main": "xit-parse.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DLvalentine/xit-parse.git"
+  },
+  "keywords": [
+    "xit",
+    "parser",
+    "file",
+    "file-parser",
+    "xit-parse",
+    "xit-parser",
+    "javascript",
+    "javascript-file-parser"
+  ],
+  "author": "David L Valentine",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DLvalentine/xit-parse/issues"
+  },
+  "homepage": "https://github.com/DLvalentine/xit-parse#readme",
+  "type": "module",
+  "dependencies": {
+    "uuid": "^9.0.0"
+  }
+}
