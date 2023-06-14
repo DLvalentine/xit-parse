@@ -1,6 +1,6 @@
 {
   "name": "xit-parse",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An Xit file parser written in plain JavaScript",
   "main": "xit-parse.js",
   "scripts": {
