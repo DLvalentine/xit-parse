@@ -55,7 +55,7 @@ function toObject(xitString) {
 
     // NOTE / TODO -> 'groups' as a value might be unnecessary in the long run. Values could just be the UUIDs, but we'll see how it works out on the UI
     const xitObject = {
-        groups: []
+        groups: {}
     };
 
     /**

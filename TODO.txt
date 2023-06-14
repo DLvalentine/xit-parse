@@ -1,0 +1,4 @@
+xit-parse.js:    priority: /^.*([!]|[.]*[!]){1,} .*/gm, // FIXME -> this currently accepts "!.!" forms as valid, which is not the case. I see this as a formatting thing for now, so low priority fix.
+xit-parse.js:    // NOTE / TODO -> 'groups' as a value might be unnecessary in the long run. Values could just be the UUIDs, but we'll see how it works out on the UI
+xit-parse.js:    // TODO -> Need some better "invalid" line handling. Right now I think we gracefully handle with a good-faith guess, but we should commit to either throwing an error or continuing with tbe best guess.
+xit-parse.js:    // TODO -> Need some better "invalid" group handling. Right now I think we gracefully handle with a good-faith guess, but we should commit to either throwing an error or continuing with tbe best guess.
