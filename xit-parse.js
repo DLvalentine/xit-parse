@@ -19,6 +19,7 @@ const xitLineTypePatterns = {
     checkedItem: /^\[x\] .*/gm,
     ongoingItem: /^\[@\] .*/gm,
     obsoleteItem: /^\[~\] .*/gm,
+    inQuestionItem: /^\[\?\] .*/gm,
     itemDetails: /^([\t]+|[ ]{4}).*/gm,
 };
 
@@ -36,6 +37,7 @@ const ITEM_STATUS_OPEN = 'open';
 const ITEM_STATUS_CHECKED = 'checked';
 const ITEM_STATUS_ONGOING = 'ongoing';
 const ITEM_STATUS_OBSOLETE = 'obsolete';
+const ITEM_STATUS_IN_QUESTION = 'in-question';
 
 const ITEM_DETAILS_TYPE = 'details';
 
@@ -137,6 +139,9 @@ function toObject(xitString) {
         } else if (line.match(xitLineTypePatterns.obsoleteItem)) {
             addXitObjectGroupLine(currentGroupId, ITEM_TYPE, ITEM_STATUS_OBSOLETE, line);
             prevItemType = ITEM_TYPE;
+        } else if (line.match(xitLineTypePatterns.inQuestionItem)) {
+            addXitObjectGroupLine(currentGroupId, ITEM_TYPE, ITEM_STATUS_IN_QUESTION, line);
+            prevItemType = ITEM_TYPE;
         } else if ((prevItemType === ITEM_TYPE || prevItemType === ITEM_DETAILS_TYPE) && line.match(xitLineTypePatterns.itemDetails)) {
             addXitObjectGroupLine(currentGroupId, ITEM_DETAILS_TYPE, null, line);
             prevItemType = ITEM_DETAILS_TYPE;
@@ -173,7 +178,7 @@ function toString(xitObject) {
     return xitString;
 };
 
-export default {
+export {
     toObject,
     toString,
     xitLineTypePatterns,

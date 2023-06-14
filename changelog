@@ -1,0 +1,20 @@
+1.0.2
+-----
+
+- Added support for the new [?] item status
+- Added a test script + test xit file for my own use, until I get around to writing proper tests
+- Fixed the export in xit-parse, so it is easier to use (e.g. import * as xit... -> xit.toObject, instead of my silly xit.default.toObject)
+- Updated documentation
+- Included new version of xit spec
+
+
+1.0.1
+-----
+
+- Fixed a bug with the parser, the groups were setup as an array instead of an object, causing JSON functions like stringify not to work. Groups are setup as an object as expected now.
+- Updated documentation
+
+1.0.0
+-----
+
+- Released a working version of the parser!

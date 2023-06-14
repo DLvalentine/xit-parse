@@ -3,6 +3,9 @@ A simple, plain JavaScript, program that parses [Xit files](https://xit.jotaen.n
 
 It deviates just a little bit from the spec (included in this repo for convenience), but only to the extent that I find acceptable.
 
+To use, simply add `xit-parse` to your `package.json`, then add:
+`import * as xit from 'xit-parse'` to your code. From there, you can use any of the exposed functions or constants, like so: `xit.toObject(...)`
+
 There are two methods exposed:
 * `toObject`: Given an Xit string (assuming you have already read the file to a variable), this returns the Xit string represented as an Object.
 * `toString`: Given the Xit string represented as an Object, this returns the Xit as a string, that can be written to file.
