@@ -1,4 +1,12 @@
-xit-parse.js:    priority: /^.*([!]|[.]*[!]){1,} .*/gm, // FIXME -> this currently accepts "!.!" forms as valid, which is not the case. I see this as a formatting thing for now, so low priority fix.
+spec/README.md:A plain-text file format for todos and check lists.
+spec/Specification.md:[x]it! is a plain-text file format for todos and check lists.
+spec/Specification.md:> My TODO list
+todo.bat:git grep -EIi "TODO|FIXME" >> TODO.txt
+xit-parse.js:// TODO - If this gets >=300 lines, might be best to pull constants out into own file
+xit-parse.js:// TODO -> Is this a good solution? Or is there a way to modify the regex we have above?
+xit-parse.js:    priorityLine: /^.*([!]|[.]*[!]){1,} .*/gm, // FIXME -> this currently accepts "!.!" forms as valid, which is not the case. I see this as a formatting thing for now, so low priority fix.
 xit-parse.js:    // NOTE / TODO -> 'groups' as a value might be unnecessary in the long run. Values could just be the UUIDs, but we'll see how it works out on the UI
 xit-parse.js:    // TODO -> Need some better "invalid" line handling. Right now I think we gracefully handle with a good-faith guess, but we should commit to either throwing an error or continuing with tbe best guess.
+xit-parse.js:        // TODO -> content/rawContent newline type check could be cleaned up, fine as is.
 xit-parse.js:    // TODO -> Need some better "invalid" group handling. Right now I think we gracefully handle with a good-faith guess, but we should commit to either throwing an error or continuing with tbe best guess.
+xit-parse.js: * TODO -> Make a better version of this that constructs an object based on properties, not necessarily raw content

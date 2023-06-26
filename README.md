@@ -8,18 +8,31 @@ To use, simply add `xit-parse` to your `package.json`, then add:
 
 There are two methods exposed:
 * `toObject`: Given an Xit string (assuming you have already read the file to a variable), this returns the Xit string represented as an Object.
-* `toString`: Given the Xit string represented as an Object, this returns the Xit as a string, that can be written to file.
+* `toString`: Given the Xit string represented as an Object, this returns the Xit as a string, that can be written to file. 
+ 
+  **!** **NOTE:** `toString` currently uses the `rawContent` property of an Xit object to make the Xit string. I'm working on a rewrite to use the object properties to do that now that they are finalized (more or less)
 
 There are also a number of constants exposed, whether you find them useful is up to you:
-``` 
+```
+    toObject,
+    toString,
     xitLineTypePatterns,
+    xitItemStatusDelimiterPatterns,
     xitLineModifierPatterns,
     TITLE_TYPE,
     ITEM_TYPE,
+    ITEM_LEFT_SYM,
+    ITEM_RIGHT_SYM,
     ITEM_STATUS_OPEN,
+    ITEM_STATUS_OPEN_SYM,
     ITEM_STATUS_CHECKED,
+    ITEM_STATUS_CHECKED_SYM,
     ITEM_STATUS_ONGOING,
+    ITEM_STATUS_ONGOING_SYM,
     ITEM_STATUS_OBSOLETE,
+    ITEM_STATUS_OBSOLETE_SYM,
+    ITEM_STATUS_IN_QUESTION,
+    ITEM_STATUS_IN_QUESTION_SYM,
     ITEM_DETAILS_TYPE,
     NEWLINE_TYPE,
     PRIORITY_MOD_TYPE,
@@ -34,33 +47,36 @@ When `toObject` is called on the following *.xit file (A book reading list, as a
 
 ```
 Books I Am Reading
-[@] ! Lord of Chaos #jordan #fantasy -> 2023
-[@] Cibolla Burn #scifi #corey
+[@] !!!! Lord of Chaos #jordan #fantasy -> 2023
+[@] ...! Cibola Burn #scifi #corey
 
 Books I Have Read
 [x] The Tao of Pooh #philosophy
 
 Books I Want to Read
-[ ] The Way of Kings #sanderson #fantasy
+[?] The Way of Kings #sanderson #fantasy
 [~] Infinite Jest #fiction
 ```
 
 **The Output:**
 
-```{
+```
+{
   "groups": {
-    "74fbedf1-1235-4af1-b88e-7652bbd19937": [
+    "bada0924-202c-4adb-9bdf-151057c8ef71": [
       {
         "type": "title",
         "status": null,
         "content": "Books I Am Reading",
+        "rawContent": "Books I Am Reading",
         "modifiers": null,
-        "groupID": "74fbedf1-1235-4af1-b88e-7652bbd19937"
+        "groupID": "bada0924-202c-4adb-9bdf-151057c8ef71"
       },
       {
         "type": "item",
         "status": "ongoing",
-        "content": "[@] ! Lord of Chaos #jordan #fantasy -> 2023",
+        "content": "Lord of Chaos",
+        "rawContent": "[@] !!!! Lord of Chaos #jordan #fantasy -> 2023",
         "modifiers": {
           "hasPriority": true,
           "due": "2023",
@@ -69,35 +85,38 @@ Books I Want to Read
             "#fantasy"
           ]
         },
-        "groupID": "74fbedf1-1235-4af1-b88e-7652bbd19937"
+        "groupID": "bada0924-202c-4adb-9bdf-151057c8ef71"
       },
       {
         "type": "item",
         "status": "ongoing",
-        "content": "[@] Cibolla Burn #scifi #corey",
+        "content": "Cibola Burn",
+        "rawContent": "[@] ...! Cibola Burn #scifi #corey",
         "modifiers": {
-          "hasPriority": false,
+          "hasPriority": true,
           "due": null,
           "tags": [
             "#scifi",
             "#corey"
           ]
         },
-        "groupID": "74fbedf1-1235-4af1-b88e-7652bbd19937"
+        "groupID": "bada0924-202c-4adb-9bdf-151057c8ef71"
       }
     ],
-    "25843d77-142c-40fb-8759-5a37f29c3783": [
+    "289ce5f4-c1b5-4320-baff-028d104382fa": [
       {
         "type": "title",
         "status": null,
         "content": "Books I Have Read",
+        "rawContent": "Books I Have Read",
         "modifiers": null,
-        "groupID": "25843d77-142c-40fb-8759-5a37f29c3783"
+        "groupID": "289ce5f4-c1b5-4320-baff-028d104382fa"
       },
       {
         "type": "item",
         "status": "checked",
-        "content": "[x] The Tao of Pooh #philosophy",
+        "content": "The Tao of Pooh",
+        "rawContent": "[x] The Tao of Pooh #philosophy",
         "modifiers": {
           "hasPriority": false,
           "due": null,
@@ -105,21 +124,23 @@ Books I Want to Read
             "#philosophy"
           ]
         },
-        "groupID": "25843d77-142c-40fb-8759-5a37f29c3783"
+        "groupID": "289ce5f4-c1b5-4320-baff-028d104382fa"
       }
     ],
-    "bc578598-f9d3-4146-a366-558679cc2594": [
+    "833b7cbe-dffd-441c-9452-8cf990ad12cb": [
       {
         "type": "title",
         "status": null,
         "content": "Books I Want to Read",
+        "rawContent": "Books I Want to Read",
         "modifiers": null,
-        "groupID": "bc578598-f9d3-4146-a366-558679cc2594"
+        "groupID": "833b7cbe-dffd-441c-9452-8cf990ad12cb"
       },
       {
         "type": "item",
-        "status": "open",
-        "content": "[ ] The Way of Kings #sanderson #fantasy",
+        "status": "in-question",
+        "content": "The Way of Kings",
+        "rawContent": "[?] The Way of Kings #sanderson #fantasy",
         "modifiers": {
           "hasPriority": false,
           "due": null,
@@ -128,12 +149,13 @@ Books I Want to Read
             "#fantasy"
           ]
         },
-        "groupID": "bc578598-f9d3-4146-a366-558679cc2594"
+        "groupID": "833b7cbe-dffd-441c-9452-8cf990ad12cb"
       },
       {
         "type": "item",
         "status": "obsolete",
-        "content": "[~] Infinite Jest #fiction",
+        "content": "Infinite Jest",
+        "rawContent": "[~] Infinite Jest #fiction",
         "modifiers": {
           "hasPriority": false,
           "due": null,
@@ -141,8 +163,9 @@ Books I Want to Read
             "#fiction"
           ]
         },
-        "groupID": "bc578598-f9d3-4146-a366-558679cc2594"
+        "groupID": "833b7cbe-dffd-441c-9452-8cf990ad12cb"
       }
     ]
   }
-}```
+}
+```

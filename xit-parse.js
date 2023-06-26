@@ -1,4 +1,5 @@
 // NOTE - Possible improvement, this might live better as a class one day. I'm happy with it for now though.
+// TODO - If this gets >=300 lines, might be best to pull constants out into own file
 /**
  * xit-pase.js
  * dependencies: uuid
@@ -23,9 +24,20 @@ const xitLineTypePatterns = {
     itemDetails: /^([\t]+|[ ]{4}).*/gm,
 };
 
+// To be used when splitting raw content out into "human readable"/sanitized content
+// TODO -> Is this a good solution? Or is there a way to modify the regex we have above?
+const xitItemStatusDelimiterPatterns = {
+    openItem: /^\[ \] /gm,
+    checkedItem: /^\[x\] /gm,
+    ongoingItem: /^\[@\] /gm,
+    obsoleteItem: /^\[~\] /gm,
+    inQuestionItem: /^\[\?\] /gm,
+};
+
 // To be used when looking at line tokens to determine modifiers
 const xitLineModifierPatterns = {
-    priority: /^.*([!]|[.]*[!]){1,} .*/gm, // FIXME -> this currently accepts "!.!" forms as valid, which is not the case. I see this as a formatting thing for now, so low priority fix.
+    priorityLine: /^.*([!]|[.]*[!]){1,} .*/gm, // FIXME -> this currently accepts "!.!" forms as valid, which is not the case. I see this as a formatting thing for now, so low priority fix.
+    priority: /[!.]{1,} /gm,
     dueDate: /-> ([0-9]{4}(-|\/){0,1}([qQwW]{0,1}[0-9]{1,2}){0,1})(-|\/){0,1}([0-9]{2}){0,1}/gm,
     tag: /#[^ ]{1,}/gm,
 };
@@ -33,11 +45,18 @@ const xitLineModifierPatterns = {
 const TITLE_TYPE = 'title';
 
 const ITEM_TYPE = 'item';
+const ITEM_LEFT_SYM = '[';
+const ITEM_RIGHT_SYM = ']';
 const ITEM_STATUS_OPEN = 'open';
+const ITEM_STATUS_OPEN_SYM = ' ';
 const ITEM_STATUS_CHECKED = 'checked';
+const ITEM_STATUS_CHECKED_SYM = 'x'
 const ITEM_STATUS_ONGOING = 'ongoing';
+const ITEM_STATUS_ONGOING_SYM = '@';
 const ITEM_STATUS_OBSOLETE = 'obsolete';
+const ITEM_STATUS_OBSOLETE_SYM = '~';
 const ITEM_STATUS_IN_QUESTION = 'in-question';
+const ITEM_STATUS_IN_QUESTION_SYM = '?';
 
 const ITEM_DETAILS_TYPE = 'details';
 
@@ -73,7 +92,7 @@ function toObject(xitString) {
             tags: []
         };
 
-        const hasPriority = content.match(xitLineModifierPatterns.priority);
+        const hasPriority = content.match(xitLineModifierPatterns.priorityLine);
         const due = content.match(xitLineModifierPatterns.dueDate);
         const tags = content.match(xitLineModifierPatterns.tag);
 
@@ -98,18 +117,47 @@ function toObject(xitString) {
      */
     // TODO -> Need some better "invalid" line handling. Right now I think we gracefully handle with a good-faith guess, but we should commit to either throwing an error or continuing with tbe best guess.
     const addXitObjectGroupLine = (uuid, type, status, content) => {
-        const trimmedContent = content.replace(/[\n\r]*$/, '');
+        const trimmedRawContent = content.replace(/[\n\r]*$/, '');
 
         if(!xitObject.groups[uuid]) {
             xitObject.groups[uuid] = [];
         }
 
+        let readableContent = content;
+        if(type === ITEM_TYPE) {
+            switch(status) {
+                case ITEM_STATUS_OPEN:
+                    readableContent = readableContent.replace(xitItemStatusDelimiterPatterns.openItem, '');
+                    break;
+                case ITEM_STATUS_CHECKED:
+                    readableContent = readableContent.replace(xitItemStatusDelimiterPatterns.checkedItem, '');
+                    break;
+                case ITEM_STATUS_ONGOING:
+                    readableContent = readableContent.replace(xitItemStatusDelimiterPatterns.ongoingItem, '');
+                    break;
+                case ITEM_STATUS_OBSOLETE:
+                    readableContent = readableContent.replace(xitItemStatusDelimiterPatterns.obsoleteItem, '');
+                    break;
+                case ITEM_STATUS_IN_QUESTION:
+                    readableContent = readableContent.replace(xitItemStatusDelimiterPatterns.inQuestionItem, '');
+                    break;
+            }
+        }
+        
+        if ( type === ITEM_TYPE || type === ITEM_DETAILS_TYPE) {
+            readableContent = readableContent.replace(xitLineModifierPatterns.priority, '');
+            readableContent = readableContent.replace(xitLineModifierPatterns.dueDate, '');
+            readableContent = readableContent.replace(xitLineModifierPatterns.tag, '');
+        }
+
+        // TODO -> content/rawContent newline type check could be cleaned up, fine as is.
         xitObject.groups[uuid].push(
             {
                 type,
                 status,
-                content: type === NEWLINE_TYPE ? '\n' : trimmedContent,
-                modifiers: (type === TITLE_TYPE || type === NEWLINE_TYPE) ? null : parseXitModifiers(trimmedContent),
+                content: type === NEWLINE_TYPE ? '\n' : readableContent.replace(/[\n\r]*$/, '').trim(),
+                rawContent: type === NEWLINE_TYPE ? '\n' : trimmedRawContent,
+                modifiers: (type === TITLE_TYPE || type === NEWLINE_TYPE) ? null : parseXitModifiers(trimmedRawContent),
                 groupID: uuid
             }
         );
@@ -162,6 +210,8 @@ function toObject(xitString) {
 /**
  * Given an xitObject (as generated by toObject), return
  * xit formatted string contents, usually for file writing
+ * TODO -> Make a better version of this that constructs an object based on properties, not necessarily raw content
+ *      -> in the event of a mutated object, raw content might not match anymore. Depends on client usage probably.
  * @param {object} xitObject 
  * @returns {string} - raw xit file contents as a string
  */
@@ -170,7 +220,7 @@ function toString(xitObject) {
 
     Object.values(xitObject.groups).forEach((group) => {
         Object.values(group).forEach((line) => {
-            xitString += `${line.content}\n`;
+            xitString += `${line.rawContent}\n`;
         })
         xitString += '\n';
     });
@@ -182,13 +232,22 @@ export {
     toObject,
     toString,
     xitLineTypePatterns,
+    xitItemStatusDelimiterPatterns,
     xitLineModifierPatterns,
     TITLE_TYPE,
     ITEM_TYPE,
+    ITEM_LEFT_SYM,
+    ITEM_RIGHT_SYM,
     ITEM_STATUS_OPEN,
+    ITEM_STATUS_OPEN_SYM,
     ITEM_STATUS_CHECKED,
+    ITEM_STATUS_CHECKED_SYM,
     ITEM_STATUS_ONGOING,
+    ITEM_STATUS_ONGOING_SYM,
     ITEM_STATUS_OBSOLETE,
+    ITEM_STATUS_OBSOLETE_SYM,
+    ITEM_STATUS_IN_QUESTION,
+    ITEM_STATUS_IN_QUESTION_SYM,
     ITEM_DETAILS_TYPE,
     NEWLINE_TYPE,
     PRIORITY_MOD_TYPE,

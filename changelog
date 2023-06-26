@@ -1,3 +1,10 @@
+1.1.0
+-----
+
+- Updated the `content` property of the Xit Object. It now returns the "human readable", sanitized content - content without modifiers, status delimiters, etc.
+- Added the `rawContent` property to the Xit Object. This is what `content` used to be, the raw, unchanged content from a line of Xit.
+- Added new constants (and some that were missing) to list that are exported along with xit-parse functions.
+
 1.0.2
 -----
 
