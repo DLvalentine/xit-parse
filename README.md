@@ -10,8 +10,6 @@ There are two methods exposed:
 * `toObject`: Given an Xit string (assuming you have already read the file to a variable), this returns the Xit string represented as an Object.
 * `toString`: Given the Xit string represented as an Object, this returns the Xit as a string, that can be written to file. 
  
-  **!** **NOTE:** `toString` currently uses the `rawContent` property of an Xit object to make the Xit string. I'm working on a rewrite to use the object properties to do that now that they are finalized (more or less)
-
 There are also a number of constants exposed, whether you find them useful is up to you:
 ```
     toObject,

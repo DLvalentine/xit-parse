@@ -1,3 +1,9 @@
+1.2.0
+-----
+
+- Updated `toString` to use the provided xit object's properties to build the string, instead of its rawContent, which may or may not match, depending on client usage/mutation. If this were more than a parser, I'd consider providing update methods for the xit object. For now, that's on the client IMO.
+- Added `priorityLevel` and `priorityPadding` to the modifiers group in the object representation
+
 1.1.0
 -----
 
