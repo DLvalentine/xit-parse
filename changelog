@@ -1,3 +1,9 @@
+1.2.1
+-----
+
+- Updated TODOs/FIXMEs to note possible future Xit POJO class - currently unsure if that is within scope of this project
+- Updated README to contain properties added in 1.2.0
+
 1.2.0
 -----
 

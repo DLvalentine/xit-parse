@@ -61,14 +61,14 @@ Books I Want to Read
 ```
 {
   "groups": {
-    "bada0924-202c-4adb-9bdf-151057c8ef71": [
+    "5215f2ee-51f3-4de0-a270-8c856364bc85": [
       {
         "type": "title",
         "status": null,
         "content": "Books I Am Reading",
         "rawContent": "Books I Am Reading",
         "modifiers": null,
-        "groupID": "bada0924-202c-4adb-9bdf-151057c8ef71"
+        "groupID": "5215f2ee-51f3-4de0-a270-8c856364bc85"
       },
       {
         "type": "item",
@@ -77,13 +77,15 @@ Books I Want to Read
         "rawContent": "[@] !!!! Lord of Chaos #jordan #fantasy -> 2023",
         "modifiers": {
           "hasPriority": true,
+          "priorityLevel": 4,
+          "priorityPadding": 0,
           "due": "2023",
           "tags": [
             "#jordan",
             "#fantasy"
           ]
         },
-        "groupID": "bada0924-202c-4adb-9bdf-151057c8ef71"
+        "groupID": "5215f2ee-51f3-4de0-a270-8c856364bc85"
       },
       {
         "type": "item",
@@ -92,23 +94,25 @@ Books I Want to Read
         "rawContent": "[@] ...! Cibola Burn #scifi #corey",
         "modifiers": {
           "hasPriority": true,
+          "priorityLevel": 1,
+          "priorityPadding": 3,
           "due": null,
           "tags": [
             "#scifi",
             "#corey"
           ]
         },
-        "groupID": "bada0924-202c-4adb-9bdf-151057c8ef71"
+        "groupID": "5215f2ee-51f3-4de0-a270-8c856364bc85"
       }
     ],
-    "289ce5f4-c1b5-4320-baff-028d104382fa": [
+    "85d6ad60-4f10-4e06-9a0c-a54f49273b84": [
       {
         "type": "title",
         "status": null,
         "content": "Books I Have Read",
         "rawContent": "Books I Have Read",
         "modifiers": null,
-        "groupID": "289ce5f4-c1b5-4320-baff-028d104382fa"
+        "groupID": "85d6ad60-4f10-4e06-9a0c-a54f49273b84"
       },
       {
         "type": "item",
@@ -117,22 +121,24 @@ Books I Want to Read
         "rawContent": "[x] The Tao of Pooh #philosophy",
         "modifiers": {
           "hasPriority": false,
+          "priorityLevel": 0,
+          "priorityPadding": 0,
           "due": null,
           "tags": [
             "#philosophy"
           ]
         },
-        "groupID": "289ce5f4-c1b5-4320-baff-028d104382fa"
+        "groupID": "85d6ad60-4f10-4e06-9a0c-a54f49273b84"
       }
     ],
-    "833b7cbe-dffd-441c-9452-8cf990ad12cb": [
+    "38b122df-1da5-4958-8853-76a17f5ea01e": [
       {
         "type": "title",
         "status": null,
         "content": "Books I Want to Read",
         "rawContent": "Books I Want to Read",
         "modifiers": null,
-        "groupID": "833b7cbe-dffd-441c-9452-8cf990ad12cb"
+        "groupID": "38b122df-1da5-4958-8853-76a17f5ea01e"
       },
       {
         "type": "item",
@@ -141,13 +147,15 @@ Books I Want to Read
         "rawContent": "[?] The Way of Kings #sanderson #fantasy",
         "modifiers": {
           "hasPriority": false,
+          "priorityLevel": 0,
+          "priorityPadding": 0,
           "due": null,
           "tags": [
             "#sanderson",
             "#fantasy"
           ]
         },
-        "groupID": "833b7cbe-dffd-441c-9452-8cf990ad12cb"
+        "groupID": "38b122df-1da5-4958-8853-76a17f5ea01e"
       },
       {
         "type": "item",
@@ -156,12 +164,14 @@ Books I Want to Read
         "rawContent": "[~] Infinite Jest #fiction",
         "modifiers": {
           "hasPriority": false,
+          "priorityLevel": 0,
+          "priorityPadding": 0,
           "due": null,
           "tags": [
             "#fiction"
           ]
         },
-        "groupID": "833b7cbe-dffd-441c-9452-8cf990ad12cb"
+        "groupID": "38b122df-1da5-4958-8853-76a17f5ea01e"
       }
     ]
   }

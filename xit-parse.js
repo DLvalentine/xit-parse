@@ -160,6 +160,8 @@ function toObject(xitString) {
 
         // TODO -> content/rawContent newline type check could be cleaned up, fine as is.
         // NOTE -> rawContent should never be used in toString, as it may not match state of object, as we don't provide update methods
+        // TODO (?) -> Originally out of scope, but could be nice to refactor some of this and then provide a way to create a new xit object via an xit class...
+        //          ^ I plan to do this anyway with one of my own applications that will consume this, maybe I'll circle back on that after I work on the application...
         xitObject.groups[uuid].push(
             {
                 type,
