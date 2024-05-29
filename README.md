@@ -1,22 +1,177 @@
-# xit-parse
-A simple, plain JavaScript, program that parses [Xit files](https://xit.jotaen.net/). Written originally to be used in a desktop editor that I'm currently writing for desktop, web, and mobile.
+# Xit-Parse
+A JavaScript library that can parse [Xit files](https://xit.jotaen.net/). 
+The primary purpose of this library is to output Xit file contents into JSON, or create Xit-formatted data from JSON.
 
-It deviates just a little bit from the spec (included in this repo for convenience), but only to the extent that I find acceptable.
+# Getting Started
+The easiest way to use xit-parse is with [Node](https://nodejs.org/en). Once Node is installed on your system, and you have a project with a `package.json` file created ([npm-init documentation](https://docs.npmjs.com/cli/v10/commands/npm-init)), do the following:
 
-To use, simply add `xit-parse` to your `package.json`, then add:
-`import * as xit from 'xit-parse'` to your code. From there, you can use any of the exposed functions or constants, like so: `xit.toObject(...)`
+#### Install the Library
+In the working directory of your project, run `npm i xit-parse` in a command prompt or terminal
 
-There are two methods exposed:
-* `toObject`: Given an Xit string (assuming you have already read the file to a variable), this returns the Xit string represented as an Object.
-* `toString`: Given the Xit string represented as an Object, this returns the Xit as a string, that can be written to file. 
- 
-There are also a number of constants exposed, whether you find them useful is up to you:
+#### Import the Library
+Add `import * as xit from 'xit-parse'` to your code. From there, you can use any of the exposed functions or constants, described below, like so: `xit.toObject(...)`.
+
+# Usage
+
+There are two functions exposed:
+* `toObject`: Given an Xit string (assuming you have already read the file to a variable, or have the string in memory), this returns the Xit string represented as an Object.
+* `toString`: Given the Xit string represented as an Object, this returns the Xit as a string, that can then be written to file.
+
+***Note***: The [schema](https://json-schema.org/) (or shape) of this Object is described below, and must be followed if you plan to use `toString`. I am considering creating functions to construct Xit Objects to make it easier in the future.
+
+## Overview of Expected JSON Schema
+#### Overview
+Xit-parse breaks up an Xit file into groups. Xit groups are a title line, followed by any number of items and their details. 
+
+In the JSON Schema, A ***group*** is an object that maps unique group name strings to arrays of objects describing each line in that group of Xit data from top to bottom.
+
+Within that **group** should be an array of group items. An **item** is a line in an Xit file that has a **status** (open, in-progress, etc.), **type** (title, item, item-details), **content** (plain content, no modifiers or status data), **rawContent** (raw, unformatted content - the original xit as written), **modifiers** (priority, due date, etc.), and **groupID**. The **groupID** is that unique group name, so that each line can refer to the group it belongs to. 
+
+The next section will discuss **item** properties (status, type, and so on) in detail.
+
+#### Item Properties
+* `type <string>`: The type of item. A group title, item, or item details.
+* `status <string|null>`: If the item `type` is `title`, this should be null. Otherwise it is the status of the item. See *Exposed Constants and Objects* below for valid statuses.
+* `content <string>`: The content of the line, but without modifiers, status indicators, or any other Xit-specific markup
+* `rawContent <string>`: The *raw, unmodified* content of the Xit line. This is the Xit line as-written.
+* `modifiers <object|null>`: An object containing modifiers of the item if it is not a title type, otherwise this is null. Valid properties:
+  * `hasPriority <bool>`: True if the xit line has any `!` priority indicators.
+  * `priorityLevel <number>`: The number of `!` priority indicators the line contains.
+  * `priorityPadding <number>`: The number of `.` priority padding indicators preceding the first `!` priority indicator
+  * `due <string>`: The due date. A `->` in Xit, followed by a valid date format. (See [Xit syntax](https://xit.jotaen.net/syntax-guide) for details)
+  * `tags <array<string>>`: An array of strings listing the tags given to the line
+* `groupID`: The name of the group this item belongs to. As mentioned above, group names ***must*** be unique.
+
+#### Schema
 ```
-    toObject,
-    toString,
-    xitLineTypePatterns,
-    xitItemStatusDelimiterPatterns,
-    xitLineModifierPatterns,
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "groups": {
+      "type": "object",
+      "properties": {
+        "UniqueGroupName": {
+          "type": "array",
+          "items": [
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string (null if title type)"
+                },
+                "content": {
+                  "type": "string"
+                },
+                "rawContent": {
+                  "type": "string"
+                },
+                "modifiers": {
+                  "type": "null"
+                },
+                "groupID": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "type",
+                "status",
+                "content",
+                "rawContent",
+                "modifiers",
+                "groupID"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "content": {
+                  "type": "string"
+                },
+                "rawContent": {
+                  "type": "string"
+                },
+                "modifiers": {
+                  "type": "object",
+                  "properties": {
+                    "hasPriority": {
+                      "type": "boolean"
+                    },
+                    "priorityLevel": {
+                      "type": "integer"
+                    },
+                    "priorityPadding": {
+                      "type": "integer"
+                    },
+                    "due": {
+                      "type": "string"
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "hasPriority",
+                    "priorityLevel",
+                    "priorityPadding",
+                    "due",
+                    "tags"
+                  ]
+                },
+                "groupID": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "type",
+                "status",
+                "content",
+                "rawContent",
+                "modifiers",
+                "groupID"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "UniqueGroupName"
+      ]
+    }
+  },
+  "required": [
+    "groups"
+  ]
+}
+```
+
+# Exposed Constants and Objects
+ 
+In addition to the functions `toObject` and `toString`, there are also a number of objects and constants exposed, documented here primarily as reference for contributors:
+```
+    // Objects containing REGEX patterns
+    xitLineTypePatterns,             // Used to determine the type of line being parsed (title, item, details, etc.)
+    xitItemStatusDelimiterPatterns,  // Used to determine status of Xit item (done [x], obsolete [~], in-progress [@], etc.)
+    xitLineModifierPatterns          // Used to collect any modifiers on the item (due date, priority, etc.)
+
+    // Constants (see xit-parse.js for their values)
     TITLE_TYPE,
     ITEM_TYPE,
     ITEM_LEFT_SYM,
@@ -37,11 +192,11 @@ There are also a number of constants exposed, whether you find them useful is up
     DUE_DATE_MOD_TYPE,
     TAG_MOD_TYPE
 ```
-# Output Example
+# Usage Example
 
-When `toObject` is called on the following *.xit file (A book reading list, as an example), you can expect the following object (stringified for your reading convenience)
+When `toObject` is called on the following *.xit file (A book reading list, as an example), you can expect the following object:
 
-**The Xit file:**
+**Input: ReadingList.xit**
 
 ```
 Books I Am Reading
@@ -56,7 +211,7 @@ Books I Want to Read
 [~] Infinite Jest #fiction
 ```
 
-**The Output:**
+**JSON Output**
 
 ```
 {

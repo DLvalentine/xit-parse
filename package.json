@@ -28,6 +28,7 @@
   "homepage": "https://github.com/DLvalentine/xit-parse#readme",
   "type": "module",
   "dependencies": {
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "xit-parse": "^1.2.1"
   }
 }
